@@ -35,3 +35,77 @@ Or installing the official dependencies
 ```
 npm i bootstrap
 ```
+
+## Defining Modules and Components
+
+- Create a module called 'shared'
+
+```
+ng g m shared
+```
+It will generate a folder named like we wrote before with the typscript file.
+
+- Create a component for the Sidebar
+```
+ng g c shared/sidebar --skipTests -is
+```
+NOTE: '--skipTests' flag will prevent Angular to don't create tests files. '-is' means 'inline styles', so Angular won't generate any style file with the component.
+
+- Configure shared.module.ts to export the module to the entire app
+```
+@NgModule({
+  declarations: [
+    SidebarComponent
+  ],
+
+
+  // we want to use the sidebar component out of this module too
+  exports:[
+    SidebarComponent
+  ],
+
+
+  imports: [
+    CommonModule
+  ]
+})
+export class SharedModule { }
+```
+- Import shared module in the app.module.ts file
+```
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    SharedModule // <--
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+```
+At this point we should have been created a simpel structure in our project with the following schema:
+```
+app/
+|
+|- gifs/
+    |- gifs-page/
+        |- gifs-page.component.html
+        |- gifs-page.component.ts
+    |- gifs-search/
+        |- gifs-search.component.html
+        |- gifs-search.component.ts
+    |- gifs-search-results/
+        |- gifs-search-results.component.html
+        |- gifs-search-results.component.ts
+    |- gifs.module.ts
+|- shared/
+    |- sidebar/
+        |- sidebar.component.html
+        |- sidebar.component.ts
+    |- shared.module.ts
+```
+
