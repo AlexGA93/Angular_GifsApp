@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-gifs-seacrh',
@@ -6,11 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styles: [
   ]
 })
-export class GifsSeacrhComponent implements OnInit {
+export class GifsSeacrhComponent {
 
-  constructor() { }
 
-  ngOnInit(): void {
+  @ViewChild('txtSearch') txtSearch!:ElementRef<HTMLInputElement>; 
+  // 'not null assertion operaor' to assert that txtSearch is non-null
+
+  search() {
+    const value = this.txtSearch.nativeElement.value;
+    // console.log(value);
+
+    // purge input element
+    this.txtSearch.nativeElement.value = '';
   }
-
 }
