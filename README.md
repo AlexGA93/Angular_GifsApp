@@ -31,3 +31,7 @@ Tis instruction will be pasted in the **html index** file located at **/src/app/
 </html>
 
 ```
+Or installing the official dependencies
+```
+npm i bootstrap
+```
