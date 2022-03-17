@@ -108,4 +108,47 @@ app/
         |- sidebar.component.ts
     |- shared.module.ts
 ```
+## @ViewChild
 
+We'll use this Angular directive to obtain HTML objects references or obtain the input's info wrote by user.
+
+- gifs-search.component.html
+```
+<div class="col">
+    <h5>Search:</h5>
+
+    <!-- INput tag with local reference to link a function when enter key is pressed -->
+    <input 
+    type="text" 
+    class="form-control" 
+    placeholder="Search Gifs"
+
+    (keyup.enter)="search()"
+    #txtSearch 
+    >
+</div>
+```
+Notice that we have wrote a order to link a method to a key action to our 'enter' key when it has been pressed. In addition we declare a local reference ('#txtSearch ') to link that value with typescript.
+
+- gifs-search.component.ts
+```
+@Component({
+  selector: 'app-gifs-seacrh',
+  templateUrl: './gifs-seacrh.component.html',
+  styles: [
+  ]
+})
+export class GifsSeacrhComponent {
+
+  @ViewChild('txtSearch') txtSearch!:ElementRef<HTMLInputElement>; 
+  // 'not null assertion operaor' to assert that txtSearch is non-null
+
+  search() {
+    const value = this.txtSearch.nativeElement.value;
+    // console.log(value);
+
+    // purge input element
+    this.txtSearch.nativeElement.value = '';
+  }
+}
+```

@@ -1,4 +1,13 @@
 <div class="col">
     <h5>Search:</h5>
-    <input type="text" class="form-control" placeholder="Search Gifs">
+
+    <!-- INput tag with local reference to link a function when enter key is pressed -->
+    <input 
+    type="text" 
+    class="form-control" 
+    placeholder="Search Gifs"
+
+    (keyup.enter)="search()"
+    #txtSearch 
+    >
 </div>
