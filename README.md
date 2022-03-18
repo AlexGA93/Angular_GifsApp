@@ -235,3 +235,33 @@ At the sime time we can to use the service data to inject them into our sidebar 
     </div>
   </div>
   ```
+
+  ## Control Duplicates & Max. Number of Searches
+  We're going to modify our service to make a couple of changes to refine our search system:
+
+  - We don't want to make lowercase distinction
+  - We want to check for empty string value
+  - We want to check for duplicates
+  - We want to limit our number of sidebar's history to 10
+
+  For this implementations we have modified the search method at the service script:
+  ```
+  // method to store search history
+  searchGifs(query: string){
+
+    // not lowercase distinction
+    query = query.trim().toLowerCase();
+
+    // check for empty string value
+    if( query.trim().length !== 0 ){ 
+      // check for cuplicates
+      if ( !this._history.includes( query ) ) {
+        // add to the first position
+        this._history.unshift( query );
+
+        // Limite to 10 history results
+        this._history = this._history.splice(0,10);
+      }
+    }
+  }
+  ```

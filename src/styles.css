@@ -8,3 +8,6 @@ html, body{
     min-width: 180px;
 }
 
+#sidebar div  a {
+    margin: 5px;
+}
