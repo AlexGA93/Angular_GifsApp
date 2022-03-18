@@ -152,3 +152,86 @@ export class GifsSeacrhComponent {
   }
 }
 ```
+
+## Service
+We need to create a service because we want to store a search history and use it for find the gif we want.
+
+We can create our service manually or we can use the same mechanic that we have used with the components and modules.
+
+```
+ng g s gifs/services/gifs --skipTests
+```
+We can define our service script as a class where we define a copuple of variables and metods:
+  - Search results array
+  - get history method
+  - Search method to add the search input value to the array
+  ```
+  import { Injectable } from '@angular/core';
+
+  // angular root access
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GifsService {
+
+    // search results array to storage
+    private _history: string[] = [];
+
+    // get method
+    get history(){
+      return [...this._history];
+    }
+
+    // method to store search history
+    searchGifs(query: string){
+      this._history.unshift( query );
+      // console.log(this._history);
+    }
+  }
+
+  ```
+At the sime time we can to use the service data to inject them into our sidebar and render as many buttons as history has elements.
+
+  - sidebar.component.ts
+  ```
+  import { Component, OnInit } from '@angular/core';
+  import { GifsService } from '../../gifs/services/gifs.service';
+
+  @Component({
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styles: [
+    ]
+  })
+  export class SidebarComponent{
+
+    // service injection
+    constructor(private gifsService: GifsService){}
+
+    get history(){
+      return this.gifsService.history;
+    }
+  }
+
+  ```
+
+  - sidebar.component.html
+  ```
+  <div class="bg-dark border-right p-3" id="sidebar">
+    <h3 class="text-light">
+      Gifs-App
+    </h3>
+
+    <hr class="text-light">
+
+    <div class="list-group list-reset">
+      <a 
+      *ngFor="let element of history"
+      href="#"
+      class="list-group-item list-group-item-action"
+      >
+        {{element}}
+      </a>
+    </div>
+  </div>
+  ```
