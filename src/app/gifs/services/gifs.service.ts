@@ -16,7 +16,20 @@ export class GifsService {
 
   // method to store search history
   searchGifs(query: string){
-    this._history.unshift( query );
-    // console.log(this._history);
+
+    // not lowercase distinction
+    query = query.trim().toLowerCase();
+
+    // check for empty string value
+    if( query.trim().length !== 0 ){ 
+      // check for cuplicates
+      if ( !this._history.includes( query ) ) {
+        // add to the first position
+        this._history.unshift( query );
+
+        // Limite to 10 history results
+        this._history = this._history.splice(0,10);
+      }
+    }
   }
 }
