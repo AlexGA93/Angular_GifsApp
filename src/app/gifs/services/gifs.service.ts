@@ -6,6 +6,9 @@ import { Injectable } from '@angular/core';
 })
 export class GifsService {
 
+  // Giphy Developer's API Key
+  private _apiKey: string = 'wPcwQtOXKFnQuFoz9LgAZ41rIlZ8gfxr';
+
   // search results array to storage
   private _history: string[] = [];
 
