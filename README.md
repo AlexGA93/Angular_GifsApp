@@ -2,6 +2,9 @@
 
 We're going to develop a gifs searcher that it wil connect to the **GIPHY Developers API** to visualize our images.
 
+## Image Sample
+![sample image](https://github.com/AlexGA93/Angular_GifsApp/blob/9/Local_Storage/src/assets/imgs/gifsApp.png)
+
 ## Bootstrap
 We need to including a Bootstrap implementation with the singletag line copied from the [original site](https://getbootstrap.com/):
 ```
@@ -444,5 +447,94 @@ export class GifsService {
   .subscribe(response => {
     this.results = response.data;
   })
+}
+```
+
+## Local Storage
+To save data in Local Storage and allow to save history when the web browser refresh connection. We need to save the search data in our local history and load those when this component create a new instance. For that we must definde the load order in the class constructor.
+ - Save data history in the local storage
+```
+export class GifsService {
+ ...
+  // method to store search history
+  searchGifs(query: string){
+
+    // not lowercase distinction
+    query = query.trim().toLowerCase();
+    
+    if( query.trim().length !== 0 ){ 
+      if ( !this._history.includes( query ) ) {
+        this._history.unshift( query );
+        this._history = this._history.splice(0,10);
+
+        // Save data in Local Storage
+        localStorage.setItem('history', JSON.stringify(this._history))
+      }
+    }
+    /* HTTP Requests */
+
+    const params = new HttpParams()
+    .set('api_key', this._apiKey)
+    .set('limit', 10)
+    .set('q', query);
+
+    // using observables instead of promises
+    this.http.get<SearchGifsResponse>(`${this._urlService}/search`, {params})
+    .subscribe(response => {
+      this.results = response.data;
+      // Save data in Local Storage
+      localStorage.setItem('historyImages', JSON.stringify(this.results));
+    })
+  }
+```
+ - Load local storage at new instance's cration
+```
+// Injection of http module
+  constructor(private http:HttpClient) {
+
+  // access to localstorage to render hsitory
+  this._history = JSON.parse(localStorage.getItem('history')!) || [];
+  this.results = JSON.parse(localStorage.getItem('historyImages')!) || [];
+
+  }
+```
+
+## Obtain images form the Sidebar
+We want to define a click element to load the same search funcionallity:
+```
+<div class="bg-dark border-right p-3" id="sidebar">
+  <h3 class="text-light">
+    Gifs-App
+  </h3>
+
+  <hr class="text-light">
+
+  <div class="list-group list-reset">
+    <a
+    *ngFor="let element of history"
+    (click)="search( element )"
+    href="#"
+    class="list-group-item list-group-item-action"
+    >
+      {{element | titlecase}}
+    </a>
+  </div>
+</div>
+```
+In second place we need to define the search method that will make the http request:
+```
+export class SidebarComponent{
+
+  // service injection
+  constructor(private gifsService: GifsService){}
+
+  get history(){
+    return this.gifsService.history;
+  }
+
+  search( searchElement: string ){
+    // request
+    this.gifsService.searchGifs(searchElement);
+  }
 }
 ```
