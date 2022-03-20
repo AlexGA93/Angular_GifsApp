@@ -265,3 +265,20 @@ At the sime time we can to use the service data to inject them into our sidebar 
     }
   }
   ```
+
+## API Key for 'Giphy Developers'
+
+In this case we want to use the API from Giphy Developers to access to the current site's content. To do this we need to [log in and create a new app](https://developers.giphy.com/dashboard/). It should create an API Key for our Angular project.
+
+The next step is going to the documentation and check for [API Search Endpoints](https://developers.giphy.com/docs/api/endpoint#search).
+
+To check our API Key we must use our favorite API client( In this case we'll use [Insomnia](https://insomnia.rest/products/insomnia)) for our first request:
+```
+https://api.giphy.com/v1/gifs/search?api_key=apiKey&q=Vegeta&limit=10
+```
+Where:
+- **apiKey** : Our api key generated in the Dashboard's site.
+- **q** : The query that we want to search 
+- **limit** : The limit of results that we want to be returned.
+
+
