@@ -281,4 +281,168 @@ Where:
 - **q** : The query that we want to search 
 - **limit** : The limit of results that we want to be returned.
 
+## HTTP Requests
 
+In pure javascript we can make requests using a couple of methods:
+- async/await
+```
+// HTTP REQUEST
+const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q={this._query}&limit=10`);
+const data = await res.json();
+console.log(data);
+```
+- Promises
+```
+fetch(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q=Vegeta&limit=10`)
+    .then( resp => {
+      resp.json().then(data=> console.log(data))
+    });
+```
+- Angular module
+In this case we'll import this module in opur app.module.ts because we eant a global access, but it can be imported in any single module if we want it.
+
+  - app.module.ts
+  ```
+  // Angular modules
+  import { NgModule } from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
+  import { HttpClientModule } from '@angular/common/http';
+  // Custom Modules
+  import { AppComponent } from './app.component';
+  import { SharedModule } from './shared/shared.module';
+  import { GifsModule } from './gifs/gifs.module';
+
+  @NgModule({
+    declarations: [
+      AppComponent
+    ],
+    imports: [
+      BrowserModule, // Angular module
+      HttpClientModule, // Angular module
+      SharedModule, // Custom Module
+      GifsModule, // Custom Module
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
+  })
+  export class AppModule { }
+
+  ```
+    - gifs.service.ts
+  ```
+  import { HttpClient } from '@angular/common/http';
+  import { Injectable } from '@angular/core';
+
+  // angular root access
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GifsService {
+    //type check response
+    public results: any = []; 
+
+    // Giphy Developer's API Key
+    private _apiKey: string = 'wPcwQtOXKFnQuFoz9LgAZ41rIlZ8gfxr';
+
+    // search results array to storage
+    private _history: string[] = [];
+
+    ...
+
+    // Injection of http module
+    constructor(private http:HttpClient){}
+
+    ...
+      
+    // http requests using observables instead of promises
+
+    this.http.get(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q=${query}&limit=10`)
+    .subscribe((response: any) => {
+      this.results = response.data;
+    })
+  }
+  }
+
+  ```
+
+## Rendering Search Inputs
+
+Using Bootstrap we only want to render the correct request's information. For this we need to make a number o modifications i nour code:
+
+- Inject Gif's service (**gif-search-results.component.ts**)
+```
+export class GifsSearchResultsComponent {
+
+  // getting results
+  get results(){
+    return this.gifsService.results;
+  }
+
+  // Injecting service to deal with search results
+  constructor( private gifsService: GifsService ){}
+
+}
+```
+- Apply Boostrap classes to our html code
+```
+<div class="row">
+    <div
+    *ngFor="let element of results"
+    class="col-md-4 col-sm-6">
+        <div class="card">
+            <img
+            class="card-img-top" 
+            [src]="element.images.downsized_medium.url" 
+            [alt]="element.title">
+            <div class="card-body">
+                <div class="card-text">
+                    {{element.title}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+  - NOTE: To refer a logic in a html tag's property, angular allows to aim at the property that we want using "[  ]" in the property's name.
+
+## Typing HTTP Requests
+
+Previosuly we declared our http request as any because we can see that the response is an object with many properties. To make a correct typing of this, we have been use [This site's services](https://app.quicktype.io/) to create our interface named 'SearchGifsResponse'.
+
+With this site, we only have to paste or request's response (an object) and specify the language as typescript. This will generate the correct interface wit hevery object's element to use in our code.
+
+For use it we only have to crate or interface's folder and ts script and paste the generated code.
+
+Once we've exported our typescript's interfaces we only have to modify our service to make a correct syntax:
+
+From this:
+```
+export class GifsService {
+  //type check response
+  public results: any = []; 
+  ...
+
+  /* HTTP Requests */
+  // using observables instead of promises
+  this.http.get(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q=${query}&limit=10`)
+  .subscribe(response => {
+    this.results = response.data;
+  })
+}
+```
+To this: 
+
+```
+export class GifsService {
+  //type check response
+  public results: Gif[] = []; 
+  ...
+
+  /* HTTP Requests */
+  // using observables instead of promises
+  this.http.get<SearchGifsResponse>(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q=${query}&limit=10`)
+  .subscribe(response => {
+    this.results = response.data;
+  })
+}
+```

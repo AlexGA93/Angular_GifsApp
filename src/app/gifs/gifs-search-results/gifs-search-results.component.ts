@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { GifsService } from '../services/gifs.service';
 
 @Component({
   selector: 'app-gifs-search-results',
@@ -6,11 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styles: [
   ]
 })
-export class GifsSearchResultsComponent implements OnInit {
+export class GifsSearchResultsComponent {
 
-  constructor() { }
-
-  ngOnInit(): void {
+  // getting results
+  get results(){
+    return this.gifsService.results;
   }
+
+  // Injecting service to deal with search results
+  constructor( private gifsService: GifsService ){}
+
+  
 
 }

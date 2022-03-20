@@ -1,3 +1,17 @@
-<div class="col">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque, officiis? Est soluta ratione odit placeat. Neque nemo, libero laboriosam quaerat animi numquam optio? Dicta aliquid laborum laboriosam ipsum recusandae cum.
+<div class="row">
+    <div
+    *ngFor="let element of results"
+    class="col-md-4 col-sm-6">
+        <div class="card">
+            <img
+            class="card-img-top" 
+            [src]="element.images.downsized_medium.url" 
+            [alt]="element.title">
+            <div class="card-body">
+                <div class="card-text">
+                    {{element.title}}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
