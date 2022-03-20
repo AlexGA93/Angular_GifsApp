@@ -3,7 +3,7 @@
 We're going to develop a gifs searcher that it wil connect to the **GIPHY Developers API** to visualize our images.
 
 ## Image Sample
-![sample image](https://github.com/AlexGA93/Angular_GifsApp/blob/9/Local_Storage/src/assets/imgs/gifsApp.png)
+![sample image](https://github.com/AlexGA93/Angular_GifsApp/blob/Develop/src/assets/imgs/gifsApp.png)
 
 ## Bootstrap
 We need to including a Bootstrap implementation with the singletag line copied from the [original site](https://getbootstrap.com/):
