@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { SearchGifsResponse, Gif } from '../interfaces/gifs.interfaces';
@@ -13,6 +13,7 @@ export class GifsService {
 
   // Giphy Developer's API Key
   private _apiKey: string = 'wPcwQtOXKFnQuFoz9LgAZ41rIlZ8gfxr';
+  private _urlService = 'https://api.giphy.com/v1/gifs';
 
   // search results array to storage
   private _history: string[] = [];
@@ -23,7 +24,11 @@ export class GifsService {
   }
 
   // Injection of http module
-  constructor(private http:HttpClient){}
+  constructor(private http:HttpClient) {
+    // access to localstorage to render hsitory
+    this._history = JSON.parse(localStorage.getItem('history')!) || [];
+    this.results = JSON.parse(localStorage.getItem('historyImages')!) || [];
+  }
 
   // method to store search history
   searchGifs(query: string){
@@ -41,14 +46,25 @@ export class GifsService {
 
         // Limite to 10 history results
         this._history = this._history.splice(0,10);
+
+        // Save data in Local Storage
+        localStorage.setItem('history', JSON.stringify(this._history));
       }
     }
     
     /* HTTP Requests */
+
+    const params = new HttpParams()
+    .set('api_key', this._apiKey)
+    .set('limit', 10)
+    .set('q', query);
+
     // using observables instead of promises
-    this.http.get<SearchGifsResponse>(`https://api.giphy.com/v1/gifs/search?api_key=${this._apiKey}&q=${query}&limit=10`)
+    this.http.get<SearchGifsResponse>(`${this._urlService}/search`, {params})
     .subscribe(response => {
       this.results = response.data;
+      // Save data in Local Storage
+      localStorage.setItem('historyImages', JSON.stringify(this.results));
     })
   }
 }
